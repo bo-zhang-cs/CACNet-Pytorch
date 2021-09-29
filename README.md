@@ -20,7 +20,7 @@ Note that the accuracy is produced training composition classification branch al
 + FCDB [[Download link]](https://github.com/yiling-chen/flickr-cropping-dataset)
 
 1. Download these datasets and change the default dataset folder in *config_\*.py*. 
-2. There may be some images that unable to open in KU-PCP dataset, and you can fix this by calling *check_jpg_file* function in KUPCP_dataset.py.
+2. There are some images that unable to open in KU-PCP dataset, and you can fix this by calling *check_jpg_file* function in KUPCP_dataset.py.
 
 ### Train composition classification model
 ```
@@ -38,7 +38,7 @@ tensorboard --logdir=./experiments
 ```
 The model performance for each epoch is also recorded in *.csv* file under the produced folder *./experiments*. 
 
-## Citations
+## Citation
 ```
 @inproceedings{hong2021composing,
   title={Composing Photos Like a Photographer},
