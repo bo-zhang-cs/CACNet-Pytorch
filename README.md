@@ -19,8 +19,8 @@ Note that the accuracy is produced training composition classification branch al
 + FLMS [[Download Images]](http://fangchen.org/proj_page/FLMS_mm14/data/radomir500_image/image.tar) [[Download Annotation]](http://fangchen.org/proj_page/FLMS_mm14/data/radomir500_gt/release_data.tar)
 + FCDB [[Download link]](https://github.com/yiling-chen/flickr-cropping-dataset)
 
-1. Download these datasets and change the default dataset folder in *config_\*.py*. 
-2. There are some images that unable to open in KU-PCP dataset, and you can fix this by calling *check_jpg_file* function in KUPCP_dataset.py.
+1. Download these datasets and change the default dataset folder in ``config_*.py``. 
+2. There are some images that unable to open in KU-PCP dataset, and you can fix this by calling ``check_jpg_file`` function in ``KUPCP_dataset.py``.
 
 ### Train composition classification model
 ```
