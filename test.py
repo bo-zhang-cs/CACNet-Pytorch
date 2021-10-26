@@ -1,33 +1,22 @@
 import os
-import sys
 import numpy as np
-from tensorboardX import SummaryWriter
 import torch
-import time
-import datetime
-import csv
 from tqdm import tqdm
-import shutil
-import pickle
-from scipy.stats import spearmanr, pearsonr
-import torch.backends.cudnn as cudnn
-import math
-import torch.nn.functional as F
 import cv2
-import matplotlib.pyplot as plt
-
+import json
 from KUPCP_dataset import CompositionDataset, composition_cls
 from Cropping_dataset import FCDBDataset, FLMSDataset
 from config_cropping import cfg
-from CACNet import CACNet, ComClassifier
+from CACNet import CACNet
+import warnings
+warnings.filterwarnings("ignore")
 
 device = torch.device('cuda:{}'.format(cfg.gpu_id))
 
-import json
+
 device = torch.device('cuda:{}'.format(cfg.gpu_id))
-evalation_dir = '/workspace/aesthetic_cropping/human_centric/code/related_work/evaluation_results'
-save_dir = os.path.join(evalation_dir, 'CACNet')
-os.makedirs(save_dir, exist_ok=True)
+results_dir = './results'
+os.makedirs(results_dir, exist_ok=True)
 
 def compute_iou_and_disp(gt_crop, pre_crop, im_w, im_h):
     ''''
@@ -55,7 +44,7 @@ def compute_iou_and_disp(gt_crop, pre_crop, im_w, im_h):
     index   = dis_idx if (iou[iou_idx] == iou[dis_idx]) else iou_idx
     return iou[index].item(), disp[index].item()
 
-def evaluate_on_FCDB_and_FLMS(model, dataset):
+def evaluate_on_FCDB_and_FLMS(model, dataset, save_results=False):
     model.eval()
     device = next(model.parameters()).device
     accum_disp = 0
@@ -65,8 +54,12 @@ def evaluate_on_FCDB_and_FLMS(model, dataset):
     alpha_cnt = 0
     cnt = 0
 
-    save_file = os.path.join(save_dir, dataset + '.json')
-    test_results = dict()
+    if save_results:
+        save_file = os.path.join(results_dir, dataset + '.json')
+        crop_dir  = os.path.join(results_dir, dataset)
+        os.makedirs(crop_dir, exist_ok=True)
+        test_results = dict()
+
     print('=' * 5, f'Evaluating on {dataset}', '=' * 5)
     with torch.no_grad():
         if dataset == 'FCDB':
@@ -93,7 +86,9 @@ def evaluate_on_FCDB_and_FLMS(model, dataset):
                 crop[:,0::2] = crop[:,0::2] / im.shape[-1] * width
                 crop[:,1::2] = crop[:,1::2] / im.shape[-2] * height
                 pred_crop = crop.detach().cpu()
-                gt_crop   = gt_crop.reshape(-1,4)
+                gt_crop = gt_crop.reshape(-1, 4)
+                pred_crop[:,0::2] = torch.clip(pred_crop[:,0::2], min=0, max=width)
+                pred_crop[:,1::2] = torch.clip(pred_crop[:,1::2], min=0, max=height)
 
                 iou, disp = compute_iou_and_disp(gt_crop, pred_crop, width, height)
                 if iou >= alpha:
@@ -102,11 +97,18 @@ def evaluate_on_FCDB_and_FLMS(model, dataset):
                 accum_disp += disp
                 cnt += 1
 
-                best_crop = pred_crop[0].numpy().tolist()
-                best_crop = [int(x) for x in best_crop]
-                test_results[image_name] = best_crop
-    with open(save_file, 'w') as f:
-        json.dump(test_results, f)
+                if save_results:
+                    best_crop = pred_crop[0].numpy().tolist()
+                    best_crop = [int(x) for x in best_crop] # x1,y1,x2,y2
+                    test_results[image_name] = best_crop
+
+                    # save the best crop
+                    source_img = cv2.imread(image_file)
+                    croped_img  = source_img[best_crop[1] : best_crop[3], best_crop[0] : best_crop[2]]
+                    cv2.imwrite(os.path.join(crop_dir, image_name), croped_img)
+    if save_results:
+        with open(save_file, 'w') as f:
+            json.dump(test_results, f)
     avg_iou  = accum_iou / cnt
     avg_disp = accum_disp / (cnt * 4.0)
     avg_recall = float(alpha_cnt) / cnt
@@ -181,9 +183,9 @@ def evaluate_composition_classification(model):
 
 
 if __name__ == '__main__':
-    # weight_file = './experiments/224imagesize_crop8bs_com64bs_repeat1/checkpoints/best-human_iou.pth'
+    weight_file = "./pretrained_model/best-FLMS_iou.pth"
     model = CACNet(loadweights=False)
-    # model.load_state_dict(torch.load(weight_file))
+    model.load_state_dict(torch.load(weight_file))
     model = model.to(device).eval()
-    evaluate_on_FCDB_and_FLMS(model, dataset='FCDB')
-    evaluate_on_FCDB_and_FLMS(model, dataset='FLMS')
+    evaluate_on_FCDB_and_FLMS(model, dataset='FCDB', save_results=True)
+    evaluate_on_FCDB_and_FLMS(model, dataset='FLMS', save_results=True)
