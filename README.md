@@ -27,6 +27,12 @@ Note that the accuracy is produced training composition classification branch al
 - opencv-python
 - tqdm
 
+You can also install packages using pip according to [``requirements.txt``](./requirements.txt): 
+
+```bash
+pip install -r requirements.txt
+```
+
 # Usage
 
 ## Testing
