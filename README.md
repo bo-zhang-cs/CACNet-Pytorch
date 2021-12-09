@@ -1,5 +1,5 @@
 # CACNet-Pytorch
-This is an unofficial PyTorch implementation of [Composing Photos Like a Photographer](https://openaccess.thecvf.com/content/CVPR2021/html/Hong_Composing_Photos_Like_a_Photographer_CVPR_2021_paper.html).
+This is an unofficial PyTorch implementation of [Composing Photos Like a Photographer](https://openaccess.thecvf.com/content/CVPR2021/html/Hong_Composing_Photos_Like_a_Photographer_CVPR_2021_paper.html), in which the anchor-point regressors is based on Anchor-to-Joint Regression Network and more details about this can be found in their [paper](https://arxiv.org/pdf/1908.09999.pdf) & [code](https://github.com/zhangboshen/A2J).
 
 # Results
 
