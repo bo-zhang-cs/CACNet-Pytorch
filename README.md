@@ -42,7 +42,10 @@ pip install -r requirements.txt
   git clone https://github.com/bo-zhang-cs/CACNet-Pytorch.git
   cd CACNet-Pytorch && mkdir pretrained_model
   ```
-Download pretrained model (~75MB) from [[Google Drive]](https://drive.google.com/file/d/19LUhHK1viHu9TYqzk2te2orqzKMA_ZRQ/view?usp=sharing) to the folder ``pretrained_model``.
+Download pretrained models to the folder ``pretrained_model``.
+- Image Cropping Model (~75MB) [[Google Drive]](https://drive.google.com/file/d/19LUhHK1viHu9TYqzk2te2orqzKMA_ZRQ/view?usp=sharing) (If you are only interested in the cropping results and not classification results, then only need to download this.) 
+- Composition Classification Model (~63MB) [[Google Drive]](https://drive.google.com/file/d/1PK3FaId80M5yKywlMc2Uy6pHzQ_aqG4X/view?usp=sharing) (Download this if you want the best accuracy (88.4\%) of composition classification.)
+
 ```
 python test.py
 ```
