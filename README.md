@@ -1,6 +1,39 @@
 # CACNet-Pytorch
 This is an unofficial PyTorch implementation of [Composing Photos Like a Photographer](https://openaccess.thecvf.com/content/CVPR2021/html/Hong_Composing_Photos_Like_a_Photographer_CVPR_2021_paper.html), in which the anchor-point regressors is based on Anchor-to-Joint Regression Network and more details about this can be found in their [paper](https://arxiv.org/pdf/1908.09999.pdf) & [code](https://github.com/zhangboshen/A2J).
 
+# Quick Start 
+
+1. **Download code and model.**
+   ```bash
+   # Clone this repository
+   git clone https://github.com/bo-zhang-cs/CACNet-Pytorch.git
+   cd CACNet-Pytorch && mkdir pretrained_model
+   ```
+
+   Download the Image Cropping Model (~75MB) from [[Google Drive]](https://drive.google.com/file/d/19LUhHK1viHu9TYqzk2te2orqzKMA_ZRQ/view?usp=sharing) to the folder `pretrained_model`.
+
+2. **Inference on a single image:**
+   ```bash
+   python demo.py -i ${image_path} -o ${save_folder}
+   # For example
+   python demo.py -i tests/raw/302166.jpg -o tests/results/
+   ```
+
+   **Or on an image folder:**
+   ```bash
+   python demo.py -i ${image_folder} -o tests/results/
+   # For example
+   python demo.py -i tests/raw -o tests/results/
+   ```
+
+   After that, you can find the cropped images in `tests/results`. The raw and processed images are shown below:
+
+   <img src="tests/raw/302166.jpg" width=45%> <img src="tests/results/302166.jpg" width=45%>
+
+   <img src="tests/raw/309808.jpg" width=45%> <img src="tests/results/309808.jpg" width=45%>
+
+   <img src="tests/raw/342407.jpg" width=45%> <img src="tests/results/342407.jpg" width=45%>
+
 # Results
 
 ## 
@@ -33,9 +66,9 @@ You can also install packages using pip according to [``requirements.txt``](./re
 pip install -r requirements.txt
 ```
 
-# Usage
+# Train\&Eval
 
-## Testing
+## Evaluation
 
 ```bash
   # clone this repository
@@ -47,7 +80,7 @@ Download pretrained models to the folder ``pretrained_model``.
 - Composition Classification Model (~63MB) [[Google Drive]](https://drive.google.com/file/d/1PK3FaId80M5yKywlMc2Uy6pHzQ_aqG4X/view?usp=sharing) (Download this if you want the best accuracy (88.4\%) of composition classification.)
 
 ```
-python test.py
+python eval.py
 ```
 This will produce a folder ``results`` where you can find the predicted best crops.
 
